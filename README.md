@@ -41,7 +41,7 @@ var config = ConnieLang.parse({
 ```json
 {
   "common": {
-    "domain": "kimonolabs.com"
+    "domain": "mattinsler.com"
   },
   "endpoints": {
     "api": "api.@{common.domain}"
@@ -58,10 +58,10 @@ When this configuration is executed with an empty environment, the result is:
 ```json
 {
   "common": {
-    "domain": "kimonolabs.com"
+    "domain": "mattinsler.com"
   },
   "endpoints": {
-    "api": "api.kimonolabs.com"
+    "api": "api.mattinsler.com"
   },
   "server": {
     "port": 3000
@@ -75,10 +75,10 @@ However, if the PORT environment variable is set to 4000, then this would change
 ```json
 {
   "common": {
-    "domain": "kimonolabs.com"
+    "domain": "mattinsler.com"
   },
   "endpoints": {
-    "api": "api.kimonolabs.com"
+    "api": "api.mattinsler.com"
   },
   "server": {
     "port": 4000
