@@ -16,7 +16,7 @@ describe('ConnieLang', function() {
           }
         }
       });
-      
+
       assert.deepEqual(entries, [
         {key: ['foo'], value: 'bar'},
         {key: ['bar', 'baz', 'a', 'b'], value: 'c'},
@@ -26,20 +26,20 @@ describe('ConnieLang', function() {
         {key: ['bar', 'baz', 'a', 'd', 2], value: 'g'}
       ]);
     });
-    
+
     it('should return entries for an array', function() {
       var entries = ConnieLang.getEntries([
         'foo',
         {bar: 'baz'}
       ]);
-      
+
       assert.deepEqual(entries, [
         {key: [0], value: 'foo'},
         {key: [1, 'bar'], value: 'baz'}
       ]);
     });
   });
-  
+
   describe('firstInnermostInterpreterFromValue', function() {
     it('should return null when no interpreters are found', function() {
       var interpreter = ConnieLang.firstInnermostInterpreterFromValue('foobar');
@@ -68,7 +68,7 @@ describe('ConnieLang', function() {
         start: 0,
         end: 13
       });
-      
+
       value = value.slice(0, interpreter.start) + value.slice(interpreter.end);
       // ' @{foo.bar}'
       interpreter = ConnieLang.firstInnermostInterpreterFromValue(value);
@@ -168,6 +168,30 @@ describe('ConnieLang', function() {
       assert.deepEqual(config, {
         a: 'hello',
         b: 'world'
+      });
+    });
+
+    it('should ignore null and undefined values', function() {
+      var config = ConnieLang.parse({
+        a: {
+          b: [
+            'foo',
+            null,
+            4
+          ]
+        },
+        b: undefined
+      });
+
+      assert.deepEqual(config, {
+        a: {
+          b: [
+            'foo',
+            null,
+            4
+          ]
+        },
+        b: undefined
       });
     });
   });
