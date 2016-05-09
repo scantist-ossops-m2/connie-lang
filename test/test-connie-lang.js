@@ -47,38 +47,14 @@ describe('ConnieLang', function() {
     });
 
     it('should handle complex values', function() {
-      var value = '#{parseInt(${PORT})} @{foo.bar}';
+      var value = '${FOO_${PORT}} @{foo.bar}';
 
       var interpreter = ConnieLang.firstInnermostInterpreterFromValue(value);
-      assert.deepEqual(interpreter, {
-        type: '$',
-        match: '${PORT}',
-        value: 'PORT',
-        start: 11,
-        end: 18
-      });
-
-      value = value.slice(0, interpreter.start) + value.slice(interpreter.end);
-      // '#{parseInt()} @{foo.bar}'
-      interpreter = ConnieLang.firstInnermostInterpreterFromValue(value);
-      assert.deepEqual(interpreter, {
-        type: '#',
-        match: '#{parseInt()}',
-        value: 'parseInt()',
-        start: 0,
-        end: 13
-      });
-
-      value = value.slice(0, interpreter.start) + value.slice(interpreter.end);
-      // ' @{foo.bar}'
-      interpreter = ConnieLang.firstInnermostInterpreterFromValue(value);
-      assert.deepEqual(interpreter, {
-        type: '@',
-        match: '@{foo.bar}',
-        value: 'foo.bar',
-        start: 1,
-        end: 11
-      });
+      assert.equal(interpreter.type, '$');
+      assert.equal(interpreter.match, '${PORT}');
+      assert.equal(interpreter.value, 'PORT');
+      assert.equal(interpreter.start, 6);
+      assert.equal(interpreter.end, 13);
     });
   });
 
@@ -92,7 +68,6 @@ describe('ConnieLang', function() {
             e: '${@{a}}'
           }
         },
-        p: '#{parseInt(${PORT})}'
       }, {
         PORT: '3000'
       });
@@ -104,19 +79,8 @@ describe('ConnieLang', function() {
             d: 'e',
             e: '3000'
           }
-        },
-        p: 3000
+        }
       });
-    });
-
-    it('should report errors on invalid execution', function() {
-      var fn = function() {
-        ConnieLang.parse({
-          foo: '#{parseInt(FOOBAR || 4)}'
-        });
-      };
-
-      assert.throws(fn, Error);
     });
 
     it('should parse inside of arrays', function() {
@@ -124,7 +88,7 @@ describe('ConnieLang', function() {
         bar: 'hey',
         arr: [
           {foo: '@{bar}'},
-          {bar: '#{parseInt(${FOOBAR} || 4)}'},
+          {bar: '${FOOBAR:4}'},
           '${PORT}'
         ]
       }, {
@@ -141,26 +105,13 @@ describe('ConnieLang', function() {
       });
     });
 
-    it('should parse env inside of execution', function() {
+    it('should parse env inside of env', function() {
       var config = ConnieLang.parse({
-        a: '#{5 + parseInt(${ITERATIONS})}',
-        b: '#{"hello ${NAME}"}'
+        a: '${FOO_${BAR}}',
+        b: '${FOO_${BAZ}}'
       }, {
-        ITERATIONS: 8,
-        NAME: 'Matt'
-      });
-
-      assert.deepEqual(config, {
-        a: 13,
-        b: 'hello Matt'
-      });
-    });
-
-    it('should parse execution inside of env', function() {
-      var config = ConnieLang.parse({
-        a: '${FOO_#{"BAR"}}',
-        b: '${FOO_#{"BAZ"}}'
-      }, {
+        BAR: 'BAR',
+        BAZ: 'BAZ',
         FOO_BAR: 'hello',
         FOO_BAZ: 'world'
       });
@@ -192,6 +143,36 @@ describe('ConnieLang', function() {
           ]
         },
         b: undefined
+      });
+    });
+
+    it('should substitute a missing env var with an empty string', function() {
+      var config = ConnieLang.parse({
+        foo: '${HELLO}'
+      });
+
+      assert.deepEqual(config, {
+        foo: ''
+      });
+    });
+
+    it('should substitute a default value when env var does not exist', function() {
+      var config = ConnieLang.parse({
+        foo: '${HELLO:default}'
+      });
+
+      assert.deepEqual(config, {
+        foo: 'default'
+      });
+    });
+
+    it('should substitute a default value when ref does not exist', function() {
+      var config = ConnieLang.parse({
+        foo: '@{bar:default}',
+      });
+
+      assert.deepEqual(config, {
+        foo: 'default'
       });
     });
   });

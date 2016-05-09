@@ -21,7 +21,7 @@ var config = ConnieLang.parse({
     api: 'api.@{common.domain}'
   },
   server: {
-    port: '#{${PORT} || 3000}'
+    port: '${PORT:3000}'
   }
 }, process.env);
 
@@ -31,9 +31,18 @@ var config = ConnieLang.parse({
 
 **${ENV_VAR}** Environment Variable Replacement
 
-**#{code}** Inline Code Execution
-
 **@{ref}** Self-Reference Replacement
+
+### Default Values
+
+You can provide a default value in either of the patterns above, using `:` as
+a separator.
+
+For instance, `${PORT:3000}` means to substitute the PORT
+environment variable, but if that does not exist, it will return the string
+`'3000'` instead. This also works with reference patterns, like
+`@{common.domain:foo.com}`, which will use `'foo.com'` as the default value
+if `common.domain` does not exist in the current config.
 
 ## Examples
 
@@ -47,7 +56,7 @@ var config = ConnieLang.parse({
     "api": "api.@{common.domain}"
   },
   "server": {
-    "port": "#{${PORT} || 3000}"
+    "port": "${PORT:3000}"
   }
 }
 ```
@@ -64,7 +73,7 @@ When this configuration is executed with an empty environment, the result is:
     "api": "api.mattinsler.com"
   },
   "server": {
-    "port": 3000
+    "port": "3000"
   }
 }
 ```
@@ -81,7 +90,7 @@ However, if the PORT environment variable is set to 4000, then this would change
     "api": "api.mattinsler.com"
   },
   "server": {
-    "port": 4000
+    "port": "4000"
   }
 }
 ```

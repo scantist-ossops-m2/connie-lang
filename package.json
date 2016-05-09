@@ -1,7 +1,7 @@
 {
   "name": "connie-lang",
   "description": "Configuration language for connie",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "homepage": "https://github.com/mattinsler/connie-lang",
   "repository": {
     "type": "git",
@@ -21,8 +21,7 @@
     "lodash.isplainobject": "2.4.1"
   },
   "devDependencies": {
-    "mocha": "^2.0.1",
-    "mocha-jshint": "0.0.9"
+    "mocha": "2.0.1"
   },
   "keywords": ["configuration", "connie"]
 }
