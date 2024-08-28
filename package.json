@@ -1,7 +1,7 @@
 {
   "name": "connie-lang",
   "description": "Configuration language for connie",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/mattinsler/connie-lang",
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "devDependencies": {
     "mocha": "2.0.1"
   },
-  "keywords": ["configuration", "connie"]
+  "keywords": [
+    "configuration",
+    "connie"
+  ]
 }
